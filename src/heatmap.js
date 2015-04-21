@@ -221,7 +221,7 @@ dc.heatMap = function (parent, chartGroup) {
         var _rowAxisTransition = dc.transition(_chartBody.select('g.rows.axis'), _chart.transitionDuration())
             .call(_rowAxis);
         // We need the clicks added after the transition.  Unfortunately, this is handled differently
-        // for selection/transition
+        // for selection/transition 
         if (_colAxisTransition.duration || _rowAxisTransition.duration) {
             _colAxisTransition.each('end', function () {
                 d3.select(this)
