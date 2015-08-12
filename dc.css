@@ -305,6 +305,11 @@ div.dc-chart {
     stroke: none;
 }
 
+.dc-chart .heatmap .axis .domain,
+.dc-chart .heatmap .axis .tick line {
+    opacity: 0;
+}
+
 .dc-chart .heatmap .box-group.deselected rect {
     stroke: none;
     fill-opacity: .5;
