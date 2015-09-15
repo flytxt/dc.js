@@ -151,6 +151,15 @@ chart.width(300)
     * [.minAngleForLabel](#dc.pieChart+minAngleForLabel) ⇒ <code>Chart</code>
     * [.emptyTitle](#dc.pieChart+emptyTitle) ⇒ <code>Chart</code>
     * [.externalLabels](#dc.pieChart+externalLabels) ⇒ <code>Chart</code>
+  * [.sunburstChart](#dc.sunburstChart) ⇒ <code>SunburstChart</code>
+    * [.slicesCap](#dc.sunburstChart+slicesCap) ⇒ <code>Chart</code>
+    * [.innerRadius](#dc.sunburstChart+innerRadius) ⇒ <code>Chart</code>
+    * [.radius](#dc.sunburstChart+radius) ⇒ <code>Chart</code>
+    * [.cx](#dc.sunburstChart+cx) ⇒ <code>Chart</code>
+    * [.cy](#dc.sunburstChart+cy) ⇒ <code>Chart</code>
+    * [.minAngleForLabel](#dc.sunburstChart+minAngleForLabel) ⇒ <code>Chart</code>
+    * [.emptyTitle](#dc.sunburstChart+emptyTitle) ⇒ <code>Chart</code>
+    * [.externalLabels](#dc.sunburstChart+externalLabels) ⇒ <code>Chart</code>
   * [.barChart](#dc.barChart) ⇒ <code>BarChart</code>
     * [.centerBar](#dc.barChart+centerBar) ⇒ <code>Boolean</code>
     * [.barPadding](#dc.barChart+barPadding) ⇒ <code>Number</code>
@@ -2159,6 +2168,125 @@ Position slice labels offset from the outer edge of the chart
 The given argument sets the radial offset.
 
 **Kind**: instance property of <code>[pieChart](#dc.pieChart)</code>  
+
+| Param | Type |
+| --- | --- |
+| [radius] | <code>Number</code> | 
+
+<a name="dc.sunburstChart"></a>
+### dc.sunburstChart ⇒ <code>SunburstChart</code>
+The sunburst chart implementation is usually used to visualize a small tree distribution.  The sunburst
+chart uses keyAccessor to determine the slices, and valueAccessor to calculate the size of each
+slice relative to the sum of all values. Slices are ordered by `.ordering` which defaults to sorting
+by key.
+
+**Kind**: static property of <code>[dc](#dc)</code>  
+**Mixes**: <code>[capMixin](#dc.capMixin)</code>, <code>[colorMixin](#dc.colorMixin)</code>, <code>[baseMixin](#dc.baseMixin)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| parent | <code>String</code> &#124; <code>node</code> &#124; <code>d3.selection</code> &#124; <code>[compositeChart](#dc.compositeChart)</code> | Any valid [d3 single selector](https://github.com/mbostock/d3/wiki/Selections#selecting-elements) specifying a dom block element such as a div; or a dom element or d3 selection. |
+| [chartGroup] | <code>String</code> | The name of the chart group this chart instance should be placed in. Interaction with a chart will only trigger events and redraws within the chart's group. |
+
+**Example**  
+```js
+// create a sunburst chart under #chart-container1 element using the default global chart group
+var chart1 = dc.sunburstChart('#chart-container1');
+// create a sunburst chart under #chart-container2 element using chart group A
+var chart2 = dc.sunburstChart('#chart-container2', 'chartGroupA');
+```
+
+* [.sunburstChart](#dc.sunburstChart) ⇒ <code>SunburstChart</code>
+  * [.slicesCap](#dc.sunburstChart+slicesCap) ⇒ <code>Chart</code>
+  * [.innerRadius](#dc.sunburstChart+innerRadius) ⇒ <code>Chart</code>
+  * [.radius](#dc.sunburstChart+radius) ⇒ <code>Chart</code>
+  * [.cx](#dc.sunburstChart+cx) ⇒ <code>Chart</code>
+  * [.cy](#dc.sunburstChart+cy) ⇒ <code>Chart</code>
+  * [.minAngleForLabel](#dc.sunburstChart+minAngleForLabel) ⇒ <code>Chart</code>
+  * [.emptyTitle](#dc.sunburstChart+emptyTitle) ⇒ <code>Chart</code>
+  * [.externalLabels](#dc.sunburstChart+externalLabels) ⇒ <code>Chart</code>
+
+<a name="dc.sunburstChart+slicesCap"></a>
+#### sunburstChart.slicesCap ⇒ <code>Chart</code>
+Get or set the maximum number of slices the pie chart will generate. The top slices are determined by
+value from high to low. Other slices exeeding the cap will be rolled up into one single *Others* slice.
+The resulting data will still be sorted by .ordering (default by key).
+
+**Kind**: instance property of <code>[sunburstChart](#dc.sunburstChart)</code>  
+
+| Param | Type |
+| --- | --- |
+| [cap] | <code>Number</code> | 
+
+<a name="dc.sunburstChart+innerRadius"></a>
+#### sunburstChart.innerRadius ⇒ <code>Chart</code>
+Get or set the inner radius of the sunburstData chart. If the inner radius is greater than 0px then the
+sunburstData chart will be rendered as a doughnut chart. Default inner radius is 0px.
+
+**Kind**: instance property of <code>[sunburstChart](#dc.sunburstChart)</code>  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [innerRadius] | <code>Number</code> | <code>0</code> | 
+
+<a name="dc.sunburstChart+radius"></a>
+#### sunburstChart.radius ⇒ <code>Chart</code>
+Get or set the outer radius. Default radius is 90px.
+
+**Kind**: instance property of <code>[sunburstChart](#dc.sunburstChart)</code>  
+
+| Param | Type |
+| --- | --- |
+| [radius] | <code>Number</code> | 
+
+<a name="dc.sunburstChart+cx"></a>
+#### sunburstChart.cx ⇒ <code>Chart</code>
+Get or set center x coordinate position. Default is center of svg.
+
+**Kind**: instance property of <code>[sunburstChart](#dc.sunburstChart)</code>  
+
+| Param | Type |
+| --- | --- |
+| [cx] | <code>Number</code> | 
+
+<a name="dc.sunburstChart+cy"></a>
+#### sunburstChart.cy ⇒ <code>Chart</code>
+Get or set center y coordinate position. Default is center of svg.
+
+**Kind**: instance property of <code>[sunburstChart](#dc.sunburstChart)</code>  
+
+| Param | Type |
+| --- | --- |
+| [cy] | <code>Number</code> | 
+
+<a name="dc.sunburstChart+minAngleForLabel"></a>
+#### sunburstChart.minAngleForLabel ⇒ <code>Chart</code>
+Get or set the minimal slice angle for label rendering. Any slice with a smaller angle will not
+display a slice label.
+
+**Kind**: instance property of <code>[sunburstChart](#dc.sunburstChart)</code>  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [minAngleForLabel] | <code>Number</code> | <code>0.5</code> | 
+
+<a name="dc.sunburstChart+emptyTitle"></a>
+#### sunburstChart.emptyTitle ⇒ <code>Chart</code>
+Title to use for the only slice when there is no data.
+
+**Kind**: instance property of <code>[sunburstChart](#dc.sunburstChart)</code>  
+
+| Param | Type |
+| --- | --- |
+| [title] | <code>String</code> | 
+
+<a name="dc.sunburstChart+externalLabels"></a>
+#### sunburstChart.externalLabels ⇒ <code>Chart</code>
+Position slice labels offset from the outer edge of the chart
+
+The given argument sets the radial offset.
+
+**Kind**: instance property of <code>[sunburstChart](#dc.sunburstChart)</code>  
 
 | Param | Type |
 | --- | --- |
