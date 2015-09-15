@@ -76,9 +76,9 @@ describe('dc.heatmap', function () {
         });
 
         it('should position the y-axis labels with their associated rows', function() {
-            var yaxisTicks = chart.selectAll(".rows.axis .tick");
-            expect(yaxisTicks[0][0].getAttribute("transform")).toMatchTranslate(0, 150);
-            expect(yaxisTicks[0][1].getAttribute("transform")).toMatchTranslate(0, 50);
+            var yaxisTicks = chart.selectAll('.rows.axis .tick');
+            expect(yaxisTicks[0][0].getAttribute('transform')).toMatchTranslate(0, 150);
+            expect(yaxisTicks[0][1].getAttribute('transform')).toMatchTranslate(0, 50);
         });
 
         it('should have labels on the y-axis corresponding to the row values', function () {
@@ -88,9 +88,9 @@ describe('dc.heatmap', function () {
         });
 
         it('should position the x-axis labels with their associated columns', function() {
-            var xaxisTexts = chart.selectAll(".cols.axis .tick");
-            expect(xaxisTexts[0][0].getAttribute("transform")).toMatchTranslate(50, 0);
-            expect(xaxisTexts[0][1].getAttribute("transform")).toMatchTranslate(150, 0);
+            var xaxisTexts = chart.selectAll('.cols.axis .tick');
+            expect(xaxisTexts[0][0].getAttribute('transform')).toMatchTranslate(50, 0);
+            expect(xaxisTexts[0][1].getAttribute('transform')).toMatchTranslate(150, 0);
         });
 
         it('should have labels on the x-axis corresponding to the row values', function () {
@@ -351,13 +351,13 @@ describe('dc.heatmap', function () {
 
             describe('with nothing previously filtered', function () {
                 it('should filter all cells on that axis', function () {
-                    chart.selectAll(".cols.axis g").each( function(d) {
+                    chart.selectAll('.cols.axis g').each( function(d) {
                         var axisLabel = d3.select(this);
                         axisLabel.on('click')(d);
                         assertOnlyThisAxisIsFiltered(chart, 0, d);
                         axisLabel.on('click')(d);
                     });
-                    chart.selectAll(".rows.axis g").each( function(d) {
+                    chart.selectAll('.rows.axis g').each( function(d) {
                         var axisLabel = d3.select(this);
                         axisLabel.on('click')(d);
                         assertOnlyThisAxisIsFiltered(chart, 1, d);
@@ -376,9 +376,9 @@ describe('dc.heatmap', function () {
 
                     var xVal = box.datum().key[0];
 
-                    var columns = chart.selectAll(".cols.axis g");
+                    var columns = chart.selectAll('.cols.axis g');
                     var column = columns.filter( function (columnData) {
-                        return columnData == xVal;
+                        return columnData === xVal;
                     });
 
                     column.on('click')(column.datum());
@@ -400,9 +400,9 @@ describe('dc.heatmap', function () {
 
                     assertOnlyThisAxisIsFiltered(chart, 0, xVal);
 
-                    var columns = chart.selectAll(".cols.axis g");
+                    var columns = chart.selectAll('.cols.axis g');
                     var column = columns.filter( function (columnData) {
-                        return columnData == xVal;
+                        return columnData === xVal;
                     });
 
                     column.on('click')(column.datum());

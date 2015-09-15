@@ -273,40 +273,6 @@ dc.heatMap = function (parent, chartGroup) {
 
         boxes.exit().remove();
 
-        var gCols = _chartBody.selectAll('g.cols');
-        if (gCols.empty()) {
-            gCols = _chartBody.append('g').attr('class', 'cols axis');
-        }
-        var gColsText = gCols.selectAll('text').data(cols.domain());
-        gColsText.enter().append('text')
-              .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-              .style('text-anchor', 'middle')
-              .attr('y', _chart.effectiveHeight())
-              .attr('dy', 12)
-              .on('click', _chart.xAxisOnClick())
-              .text(_chart.colsLabel());
-        dc.transition(gColsText, _chart.transitionDuration())
-               .text(_chart.colsLabel())
-               .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-               .attr('y', _chart.effectiveHeight());
-        gColsText.exit().remove();
-        var gRows = _chartBody.selectAll('g.rows');
-        if (gRows.empty()) {
-            gRows = _chartBody.append('g').attr('class', 'rows axis');
-        }
-        var gRowsText = gRows.selectAll('text').data(rows.domain());
-        gRowsText.enter().append('text')
-              .attr('dy', 6)
-              .style('text-anchor', 'end')
-              .attr('x', 0)
-              .attr('dx', -2)
-              .on('click', _chart.yAxisOnClick())
-              .text(_chart.rowsLabel());
-        dc.transition(gRowsText, _chart.transitionDuration())
-              .text(_chart.rowsLabel())
-              .attr('y', function (d) { return rows(d) + boxHeight / 2; });
-        gRowsText.exit().remove();
-
         if (_chart.hasFilter()) {
             _chart.selectAll('g.box-group').each(function (d) {
                 if (_chart.isSelectedNode(d)) {
