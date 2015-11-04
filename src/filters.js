@@ -7,6 +7,13 @@
  *
  * These filter constructors are used as appropriate by the various charts to implement brushing.  We
  * mention below which chart uses which filter.  In some cases, many instances of a filter will be added.
+ *
+ * Each of the dc.js filters is an object with the following properties:
+ * * `isFiltered` - a function that returns true if a value is within the filter
+ * * `filterType` - a string identifying the filter, here the name of the constructor
+ *
+ * Currently these filter objects are also arrays, but this is not a requirement. Custom filters
+ * can be used as long as they have the properties above.
  * @name filters
  * @memberof dc
  * @type {{}}
@@ -15,12 +22,14 @@ dc.filters = {};
 
 /**
  * RangedFilter is a filter which accepts keys between `low` and `high`.  It is used to implement X
- * axis brushing for the [coordinate grid charts](#coordinate-grid-mixin).
+ * axis brushing for the {@link #dc.coordinateGridMixin coordinate grid charts}.
+ *
+ * Its `filterType` is 'RangedFilter'
  * @name RangedFilter
  * @memberof dc.filters
  * @param {Number} low
  * @param {Number} high
- * @returns {Array<Number>}
+ * @return {Array<Number>}
  * @constructor
  */
 dc.filters.RangedFilter = function (low, high) {
@@ -28,6 +37,7 @@ dc.filters.RangedFilter = function (low, high) {
     range.isFiltered = function (value) {
         return value >= this[0] && value < this[1];
     };
+    range.filterType = 'RangedFilter';
 
     return range;
 };
@@ -48,12 +58,14 @@ dc.filters.HierarchyFilter = function (path) {
 
 /**
  * TwoDimensionalFilter is a filter which accepts a single two-dimensional value.  It is used by the
- * [heat map chart](#heat-map) to include particular cells as they are clicked.  (Rows and columns are
+ * {@link #dc.heatMap heat map chart} to include particular cells as they are clicked.  (Rows and columns are
  * filtered by filtering all the cells in the row or column.)
+ *
+ * Its `filterType` is 'TwoDimensionalFilter'
  * @name TwoDimensionalFilter
  * @memberof dc.filters
  * @param {Array<Number>} filter
- * @returns {Array<Number>}
+ * @return {Array<Number>}
  * @constructor
  */
 dc.filters.TwoDimensionalFilter = function (filter) {
@@ -64,13 +76,14 @@ dc.filters.TwoDimensionalFilter = function (filter) {
         return value.length && value.length === f.length &&
                value[0] === f[0] && value[1] === f[1];
     };
+    f.filterType = 'TwoDimensionalFilter';
 
     return f;
 };
 
 /**
  * The RangedTwoDimensionalFilter allows filtering all values which fit within a rectangular
- * region. It is used by the [scatter plot](#scatter-plot) to implement rectangular brushing.
+ * region. It is used by the {@link #dc.scatterPlot scatter plot} to implement rectangular brushing.
  *
  * It takes two two-dimensional points in the form `[[x1,y1],[x2,y2]]`, and normalizes them so that
  * `x1 <= x2` and `y1 <- y2`. It then returns a filter which accepts any points which are in the
@@ -79,10 +92,12 @@ dc.filters.TwoDimensionalFilter = function (filter) {
  * If an array of two values are given to the RangedTwoDimensionalFilter, it interprets the values as
  * two x coordinates `x1` and `x2` and returns a filter which accepts any points for which `x1 <= x <
  * x2`.
+ *
+ * Its `filterType` is 'RangedTwoDimensionalFilter'
  * @name RangedTwoDimensionalFilter
  * @memberof dc.filters
  * @param {Array<Array<Number>>} filter
- * @returns {Array<Array<Number>>}
+ * @return {Array<Array<Number>>}
  * @constructor
  */
 dc.filters.RangedTwoDimensionalFilter = function (filter) {
@@ -117,6 +132,7 @@ dc.filters.RangedTwoDimensionalFilter = function (filter) {
         return x >= fromBottomLeft[0][0] && x < fromBottomLeft[1][0] &&
                y >= fromBottomLeft[0][1] && y < fromBottomLeft[1][1];
     };
+    f.filterType = 'RangedTwoDimensionalFilter';
 
     return f;
 };

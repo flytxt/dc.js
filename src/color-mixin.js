@@ -4,8 +4,8 @@
  * @name colorMixin
  * @memberof dc
  * @mixin
- * @param {Chart} _chart
- * @returns {Chart}
+ * @param {Object} _chart
+ * @return {dc.colorMixin}
  */
 dc.colorMixin = function (_chart) {
     var _colors = d3.scale.category20c();
@@ -19,19 +19,19 @@ dc.colorMixin = function (_chart) {
      * @name colors
      * @memberof dc.colorMixin
      * @instance
+     * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
      * @example
      * // alternate categorical scale
      * chart.colors(d3.scale.category20b());
-     *
      * // ordinal scale
      * chart.colors(d3.scale.ordinal().range(['red','green','blue']));
      * // convenience method, the same as above
      * chart.ordinalColors(['red','green','blue']);
-     *
      * // set a linear scale
      * chart.linearColors(["#4575b4", "#ffffbf", "#a50026"]);
-     * @param {D3Scale} [colorScale=d3.scale.category20c()]
-     * @returns {Chart}
+     * @param {d3.scale} [colorScale=d3.scale.category20c()]
+     * @return {d3.scale}
+     * @return {dc.colorMixin}
      */
     _chart.colors = function (colorScale) {
         if (!arguments.length) {
@@ -46,12 +46,14 @@ dc.colorMixin = function (_chart) {
     };
 
     /**
-     * Convenience method to set the color scale to d3.scale.ordinal with range `r`.
+     * Convenience method to set the color scale to
+     * {@link https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal d3.scale.ordinal} with
+     * range `r`.
      * @name ordinalColors
      * @memberof dc.colorMixin
      * @instance
      * @param {Array<String>} r
-     * @returns {Chart}
+     * @return {dc.colorMixin}
      */
     _chart.ordinalColors = function (r) {
         return _chart.colors(d3.scale.ordinal().range(r));
@@ -63,7 +65,7 @@ dc.colorMixin = function (_chart) {
      * @memberof dc.colorMixin
      * @instance
      * @param {Array<Number>} r
-     * @returns {Chart}
+     * @return {dc.colorMixin}
      */
     _chart.linearColors = function (r) {
         return _chart.colors(d3.scale.linear()
@@ -75,7 +77,7 @@ dc.colorMixin = function (_chart) {
      * Set or the get color accessor function. This function will be used to map a data point in a
      * crossfilter group to a color value on the color scale. The default function uses the key
      * accessor.
-     * @name linearColors
+     * @name colorAccessor
      * @memberof dc.colorMixin
      * @instance
      * @example
@@ -83,14 +85,15 @@ dc.colorMixin = function (_chart) {
      * .colorAccessor(function (d, i){return i;})
      * // color accessor for a multi-value crossfilter reduction
      * .colorAccessor(function (d){return d.value.absGain;})
-     * @param {Function} [colorAccessorFunction]
-     * @returns {Function}
+     * @param {Function} [colorAccessor]
+     * @return {Function}
+     * @return {dc.colorMixin}
      */
-    _chart.colorAccessor = function (colorAccessorFunction) {
+    _chart.colorAccessor = function (colorAccessor) {
         if (!arguments.length) {
             return _colorAccessor;
         }
-        _colorAccessor = colorAccessorFunction;
+        _colorAccessor = colorAccessor;
         _defaultAccessor = false;
         return _chart;
     };
@@ -105,12 +108,13 @@ dc.colorMixin = function (_chart) {
      * array.
      *
      * Note: previously this method accepted a callback function. Instead you may use a custom scale
-     * set by `.colors`.
+     * set by {@link #dc.colorMixin+colors .colors}.
      * @name colorDomain
      * @memberof dc.colorMixin
      * @instance
      * @param {Array<String>} [domain]
-     * @returns {Function}
+     * @return {Array<String>}
+     * @return {dc.colorMixin}
      */
     _chart.colorDomain = function (domain) {
         if (!arguments.length) {
@@ -121,12 +125,12 @@ dc.colorMixin = function (_chart) {
     };
 
     /**
-     * Set the domain by determining the min and max values as retrieved by `.colorAccessor` over the
-     * chart's dataset.
+     * Set the domain by determining the min and max values as retrieved by
+     * {@link #dc.colorMixin+colorAccessor .colorAccessor} over the chart's dataset.
      * @name calculateColorDomain
      * @memberof dc.colorMixin
      * @instance
-     * @returns {Chart}
+     * @return {dc.colorMixin}
      */
     _chart.calculateColorDomain = function () {
         var newDomain = [d3.min(_chart.data(), _chart.colorAccessor()),
@@ -142,7 +146,7 @@ dc.colorMixin = function (_chart) {
      * @instance
      * @param {*} d
      * @param {Number} [i]
-     * @returns {String}
+     * @return {String}
      */
     _chart.getColor = function (d, i) {
         return _colors(_colorAccessor.call(this, d, i));
@@ -154,7 +158,7 @@ dc.colorMixin = function (_chart) {
      * @memberof dc.colorMixin
      * @instance
      * @param {*} [colorCalculator]
-     * @returns {*}
+     * @return {*}
      */
     _chart.colorCalculator = function (colorCalculator) {
         if (!arguments.length) {

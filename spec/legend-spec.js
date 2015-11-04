@@ -161,6 +161,23 @@ describe('dc.legend', function () {
             legendItem(0).on('click').call(legendItem(0)[0][0], legendItem(0).datum());
             expect(chart.selectAll('path.line').size()).toBe(3);
         });
+
+        describe('with .legendText()', function () {
+            beforeEach(function () {
+                chart.legend(dc.legend().legendText(function (d, i) {
+                    var _i = i + 1;
+
+                    return _i + '. ' + d.name;
+                }));
+                chart.render();
+            });
+
+            it('should label the legend items with the names of their associated stacks', function () {
+                expect(legendLabel(0).text()).toBe('1. Id Sum');
+                expect(legendLabel(1).text()).toBe('2. Value Sum');
+                expect(legendLabel(2).text()).toBe('3. Fixed');
+            });
+        });
     });
 
     describe('legends with dashed lines', function () {
@@ -169,13 +186,13 @@ describe('dc.legend', function () {
             appendChartID(id);
             chart = dc.compositeChart('#' + id);
 
-            var subChart1 = dc.lineChart();
+            var subChart1 = dc.lineChart(chart);
             subChart1
                 .dimension(dateDimension)
                 .group(dateIdSumGroup, 'Id Sum')
                 .dashStyle([10,1]);
 
-            var subChart2 = dc.lineChart();
+            var subChart2 = dc.lineChart(chart);
             subChart2
                 .dimension(dateDimension)
                 .group(dateValueSumGroup, 'Value Sum')

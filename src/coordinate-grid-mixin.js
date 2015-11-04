@@ -7,8 +7,8 @@
  * @mixes dc.colorMixin
  * @mixes dc.marginMixin
  * @mixes dc.baseMixin
- * @param {Chart} _chart
- * @returns {Chart}
+ * @param {Object} _chart
+ * @return {dc.coordinateGridMixin}
  */
 dc.coordinateGridMixin = function (_chart) {
     var GRID_LINE_CLASS = 'grid-line';
@@ -107,16 +107,21 @@ dc.coordinateGridMixin = function (_chart) {
     /**
      * When changing the domain of the x or y scale, it is necessary to tell the chart to recalculate
      * and redraw the axes. (`.rescale()` is called automatically when the x or y scale is replaced
-     * with `.x()` or `.y()`, and has no effect on elastic scales.)
+     * with {@link #dc.coordinateGridMixin+x .x()} or {@link #dc.coordinateGridMixin+y .y()}, and has
+     * no effect on elastic scales.)
      * @name rescale
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @returns {Chart}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.rescale = function () {
         _unitCount = undefined;
         _resizing = true;
         return _chart;
+    };
+
+    _chart.resizing = function () {
+        return _resizing;
     };
 
     /**
@@ -128,8 +133,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @name rangeChart
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @param {Chart} [rangeChart]
-     * @returns {Chart}
+     * @param {dc.coordinateGridMixin} [rangeChart]
+     * @return {dc.coordinateGridMixin}
      */
     _chart.rangeChart = function (rangeChart) {
         if (!arguments.length) {
@@ -145,8 +150,9 @@ dc.coordinateGridMixin = function (_chart) {
      * @name zoomScale
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @param {Array<*>} [extent]
-     * @returns {Chart}
+     * @param {Array<Number|Date>} [extent=[1, Infinity]]
+     * @return {Array<Number|Date>}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.zoomScale = function (extent) {
         if (!arguments.length) {
@@ -162,7 +168,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Boolean} [zoomOutRestrict=true]
-     * @returns {Chart}
+     * @return {Boolean}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.zoomOutRestrict = function (zoomOutRestrict) {
         if (!arguments.length) {
@@ -196,8 +203,9 @@ dc.coordinateGridMixin = function (_chart) {
      * @name g
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @param {svg} [gElement]
-     * @returns {Chart}
+     * @param {SVGElement} [gElement]
+     * @return {SVGElement}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.g = function (gElement) {
         if (!arguments.length) {
@@ -214,8 +222,9 @@ dc.coordinateGridMixin = function (_chart) {
      * @name mouseZoomable
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @param {Boolean} [mouseZoomable]
-     * @returns {Chart}
+     * @param {Boolean} [mouseZoomable=false]
+     * @return {Boolean}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.mouseZoomable = function (mouseZoomable) {
         if (!arguments.length) {
@@ -230,8 +239,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @name chartBodyG
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @param {svg} [chartBodyG]
-     * @returns {Chart}
+     * @param {SVGElement} [chartBodyG]
+     * @return {SVGElement}
      */
     _chart.chartBodyG = function (chartBodyG) {
         if (!arguments.length) {
@@ -245,18 +254,20 @@ dc.coordinateGridMixin = function (_chart) {
      * **mandatory**
      *
      * Get or set the x scale. The x scale can be any d3
-     * [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales) or
-     * [ordinal scale](https://github.com/mbostock/d3/wiki/Ordinal-Scales).
+     * {@link https://github.com/mbostock/d3/wiki/Quantitative-Scales quantitive scale} or
+     * {@link https://github.com/mbostock/d3/wiki/Ordinal-Scales ordinal scale}.
      * @name x
      * @memberof dc.coordinateGridMixin
      * @instance
+     * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
      * @example
      * // set x to a linear scale
      * chart.x(d3.scale.linear().domain([-2500, 2500]))
      * // set x to a time scale to generate histogram
      * chart.x(d3.time.scale().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
      * @param {d3.scale} [xScale]
-     * @returns {Chart}
+     * @return {d3.scale}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.x = function (xScale) {
         if (!arguments.length) {
@@ -279,11 +290,12 @@ dc.coordinateGridMixin = function (_chart) {
      * data points on x axis, or the number of points on the axis. [d3 time range functions
      * d3.time.days, d3.time.months, and
      * d3.time.years](https://github.com/mbostock/d3/wiki/Time-Intervals#aliases) are all valid xUnits
-     * function. dc.js also provides a few units function, see the [Utilities](#utilities) section for
+     * function. dc.js also provides a few units function, see the {@link #utilities Utilities} section for
      * a list of built-in units functions. The default xUnits function is dc.units.integers.
      * @name xUnits
      * @memberof dc.coordinateGridMixin
      * @instance
+     * @todo Add docs for utilities
      * @example
      * // set x units to count days
      * chart.xUnits(d3.time.days);
@@ -302,7 +314,8 @@ dc.coordinateGridMixin = function (_chart) {
      *      // be aware using fixed units will disable the focus/zoom ability on the chart
      *      return 1000;
      * @param {Function} [xUnits]
-     * @returns {Chart}
+     * @return {Function}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.xUnits = function (xUnits) {
         if (!arguments.length) {
@@ -321,13 +334,15 @@ dc.coordinateGridMixin = function (_chart) {
      * @name xAxis
      * @memberof dc.coordinateGridMixin
      * @instance
+     * @see {@link http://github.com/mbostock/d3/wiki/SVG-Axes d3.svg.axis}
      * @example
      * // customize x axis tick format
      * chart.xAxis().tickFormat(function(v) {return v + '%';});
      * // customize x axis tick values
      * chart.xAxis().tickValues([0, 100, 200, 300]);
-     * @param {d3.svg.axis} [xAxis]
-     * @returns {Chart}
+     * @param {d3.svg.axis} [xAxis=d3.svg.axis().orient('bottom')]
+     * @return {d3.svg.axis}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.xAxis = function (xAxis) {
         if (!arguments.length) {
@@ -344,7 +359,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Boolean} [elasticX=false]
-     * @returns {Chart}
+     * @return {Boolean}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.elasticX = function (elasticX) {
         if (!arguments.length) {
@@ -364,8 +380,9 @@ dc.coordinateGridMixin = function (_chart) {
      * @name xAxisPadding
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @param {Number|String} [padding]
-     * @returns {Chart}
+     * @param {Number|String} [padding=0]
+     * @return {Number|String}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.xAxisPadding = function (padding) {
         if (!arguments.length) {
@@ -381,7 +398,7 @@ dc.coordinateGridMixin = function (_chart) {
      * @name xUnitCount
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @returns {Number}
+     * @return {Number}
      */
     _chart.xUnitCount = function () {
         if (_unitCount === undefined) {
@@ -405,7 +422,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Boolean} [useRightYAxis=false]
-     * @returns {Chart}
+     * @return {Boolean}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.useRightYAxis = function (useRightYAxis) {
         if (!arguments.length) {
@@ -416,13 +434,13 @@ dc.coordinateGridMixin = function (_chart) {
     };
 
     /**
-     * Returns true if the chart is using ordinal xUnits ([dc.units.ordinal](#dcunitsordinal)), or false
+     * Returns true if the chart is using ordinal xUnits ({@link #dc.units.ordinal dc.units.ordinal}, or false
      * otherwise. Most charts behave differently with ordinal data and use the result of this method to
      * trigger the appropriate logic.
      * @name isOrdinal
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @returns {Boolean}
+     * @return {Boolean}
      */
     _chart.isOrdinal = function () {
         return _chart.xUnits() === dc.units.ordinal;
@@ -567,7 +585,7 @@ dc.coordinateGridMixin = function (_chart) {
      * @instance
      * @param {String} [labelText]
      * @param {Number} [padding=12]
-     * @returns {Chart}
+     * @return {String}
      */
     _chart.xAxisLabel = function (labelText, padding) {
         if (!arguments.length) {
@@ -701,7 +719,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @instance
      * @param {String} [labelText]
      * @param {Number} [padding=12]
-     * @returns {Chart}
+     * @return {String}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.yAxisLabel = function (labelText, padding) {
         if (!arguments.length) {
@@ -719,8 +738,10 @@ dc.coordinateGridMixin = function (_chart) {
      * @name y
      * @memberof dc.coordinateGridMixin
      * @instance
+     * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
      * @param {d3.scale} [yScale]
-     * @returns {Chart}
+     * @return {d3.scale}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.y = function (yScale) {
         if (!arguments.length) {
@@ -740,13 +761,15 @@ dc.coordinateGridMixin = function (_chart) {
      * @name yAxis
      * @memberof dc.coordinateGridMixin
      * @instance
+     * @see {@link http://github.com/mbostock/d3/wiki/SVG-Axes d3.svg.axis}
      * @example
      * // customize y axis tick format
      * chart.yAxis().tickFormat(function(v) {return v + '%';});
      * // customize y axis tick values
      * chart.yAxis().tickValues([0, 100, 200, 300]);
      * @param {d3.svg.axis} [yAxis=d3.svg.axis().orient('left')]
-     * @returns {Chart}
+     * @return {d3.svg.axis}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.yAxis = function (yAxis) {
         if (!arguments.length) {
@@ -763,7 +786,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Boolean} [elasticY=false]
-     * @returns {Chart}
+     * @return {Boolean}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.elasticY = function (elasticY) {
         if (!arguments.length) {
@@ -779,7 +803,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Boolean} [renderHorizontalGridLines=false]
-     * @returns {Chart}
+     * @return {Boolean}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.renderHorizontalGridLines = function (renderHorizontalGridLines) {
         if (!arguments.length) {
@@ -795,7 +820,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Boolean} [renderVerticalGridLines=false]
-     * @returns {Chart}
+     * @return {Boolean}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.renderVerticalGridLines = function (renderVerticalGridLines) {
         if (!arguments.length) {
@@ -810,7 +836,7 @@ dc.coordinateGridMixin = function (_chart) {
      * @name xAxisMin
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @returns {*}
+     * @return {*}
      */
     _chart.xAxisMin = function () {
         var min = d3.min(_chart.data(), function (e) {
@@ -824,7 +850,7 @@ dc.coordinateGridMixin = function (_chart) {
      * @name xAxisMax
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @returns {*}
+     * @return {*}
      */
     _chart.xAxisMax = function () {
         var max = d3.max(_chart.data(), function (e) {
@@ -838,7 +864,7 @@ dc.coordinateGridMixin = function (_chart) {
      * @name yAxisMin
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @returns {*}
+     * @return {*}
      */
     _chart.yAxisMin = function () {
         var min = d3.min(_chart.data(), function (e) {
@@ -852,7 +878,7 @@ dc.coordinateGridMixin = function (_chart) {
      * @name yAxisMax
      * @memberof dc.coordinateGridMixin
      * @instance
-     * @returns {*}
+     * @return {*}
      */
     _chart.yAxisMax = function () {
         var max = d3.max(_chart.data(), function (e) {
@@ -872,7 +898,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Number|String} [padding=0]
-     * @returns {Chart}
+     * @return {Number}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.yAxisPadding = function (padding) {
         if (!arguments.length) {
@@ -896,7 +923,8 @@ dc.coordinateGridMixin = function (_chart) {
      * // select whole months
      * chart.round(d3.time.month.round);
      * @param {Function} [round]
-     * @returns {Chart}
+     * @return {Function}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.round = function (round) {
         if (!arguments.length) {
@@ -1062,7 +1090,8 @@ dc.coordinateGridMixin = function (_chart) {
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Number} [padding=5]
-     * @returns {Chart}
+     * @return {Number}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.clipPadding = function (padding) {
         if (!arguments.length) {
@@ -1238,14 +1267,15 @@ dc.coordinateGridMixin = function (_chart) {
      * Turn on/off the brush-based range filter. When brushing is on then user can drag the mouse
      * across a chart with a quantitative scale to perform range filtering based on the extent of the
      * brush, or click on the bars of an ordinal bar chart or slices of a pie chart to filter and
-     * unfilter them. However turning on the brush filter will disable other interactive elements on
+     * un-filter them. However turning on the brush filter will disable other interactive elements on
      * the chart such as highlighting, tool tips, and reference lines. Zooming will still be possible
      * if enabled, but only via scrolling (panning will be disabled.)
      * @name brushOn
      * @memberof dc.coordinateGridMixin
      * @instance
      * @param {Boolean} [brushOn=true]
-     * @return {Chart}
+     * @return {Boolean}
+     * @return {dc.coordinateGridMixin}
      */
     _chart.brushOn = function (brushOn) {
         if (!arguments.length) {

@@ -10,13 +10,12 @@
  * var heatMap1 = dc.heatMap('#chart-container1');
  * // create a heat map under #chart-container2 element using chart group A
  * var heatMap2 = dc.heatMap('#chart-container2', 'chartGroupA');
- * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
- * [d3 single selector](https://github.com/mbostock/d3/wiki/Selections#selecting-elements) specifying
- * a dom block element such as a div; or a dom element or d3 selection.  If the bar chart is a sub-chart
- * in a [Composite Chart](#composite-chart) then pass in the parent composite chart instance.
+ * @param {String|node|d3.selection} parent - Any valid
+ * {@link https://github.com/mbostock/d3/wiki/Selections#selecting-elements d3 single selector} specifying
+ * a dom block element such as a div; or a dom element or d3 selection.
  * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
  * Interaction with a chart will only trigger events and redraws within the chart's group.
- * @returns {HeatMap}
+ * @return {dc.heatMap}
  */
 dc.heatMap = function (parent, chartGroup) {
 
@@ -57,7 +56,8 @@ dc.heatMap = function (parent, chartGroup) {
      * // the default label function just returns the name
      * chart.colsLabel(function(d) { return d; });
      * @param  {Function} [labelFunction=function(d) { return d; }]
-     * @returns {Chart}
+     * @return {Function}
+     * @return {dc.heatMap}
      */
     _chart.colsLabel = function (labelFunction) {
         if (!arguments.length) {
@@ -77,7 +77,8 @@ dc.heatMap = function (parent, chartGroup) {
      * // the default label function just returns the name
      * chart.rowsLabel(function(d) { return d; });
      * @param  {Function} [labelFunction=function(d) { return d; }]
-     * @returns {Chart}
+     * @return {Function}
+     * @return {dc.heatMap}
      */
     _chart.rowsLabel = function (labelFunction) {
         if (!arguments.length) {
@@ -133,7 +134,8 @@ dc.heatMap = function (parent, chartGroup) {
      * @memberof dc.heatMap
      * @instance
      * @param  {Array<String|Number>} [rows]
-     * @returns {Chart}
+     * @return {Array<String|Number>}
+     * @return {dc.heatMap}
      */
 
     _chart.rows = function (rows) {
@@ -163,7 +165,8 @@ dc.heatMap = function (parent, chartGroup) {
      * @memberof dc.heatMap
      * @instance
      * @param  {Array<String|Number>} [cols]
-     * @returns {Chart}
+     * @return {Array<String|Number>}
+     * @return {dc.heatMap}
      */
     _chart.cols = function (cols) {
         if (!arguments.length) {
@@ -295,8 +298,18 @@ dc.heatMap = function (parent, chartGroup) {
      * @name boxOnClick
      * @memberof dc.heatMap
      * @instance
+     * @example
+     * // default box on click handler
+     * chart.boxOnClick(function (d) {
+     *     var filter = d.key;
+     *     dc.events.trigger(function () {
+     *         _chart.filter(filter);
+     *         _chart.redrawGroup();
+     *     });
+     * });
      * @param  {Function} [handler]
-     * @returns {Chart}
+     * @return {Function}
+     * @return {dc.heatMap}
      */
     _chart.boxOnClick = function (handler) {
         if (!arguments.length) {
@@ -314,7 +327,8 @@ dc.heatMap = function (parent, chartGroup) {
      * @memberof dc.heatMap
      * @instance
      * @param  {Function} [handler]
-     * @returns {Chart}
+     * @return {Function}
+     * @return {dc.heatMap}
      */
     _chart.xAxisOnClick = function (handler) {
         if (!arguments.length) {
@@ -332,7 +346,8 @@ dc.heatMap = function (parent, chartGroup) {
      * @memberof dc.heatMap
      * @instance
      * @param  {Function} [handler]
-     * @returns {Chart}
+     * @return {Function}
+     * @return {dc.heatMap}
      */
     _chart.yAxisOnClick = function (handler) {
         if (!arguments.length) {
@@ -348,7 +363,8 @@ dc.heatMap = function (parent, chartGroup) {
      * @memberof dc.heatMap
      * @instance
      * @param  {Number} [xBorderRadius=6.75]
-     * @returns {Chart}
+     * @return {Number}
+     * @return {dc.heatMap}
      */
     _chart.xBorderRadius = function (xBorderRadius) {
         if (!arguments.length) {
@@ -364,7 +380,8 @@ dc.heatMap = function (parent, chartGroup) {
      * @memberof dc.heatMap
      * @instance
      * @param  {Number} [yBorderRadius=6.75]
-     * @returns {Chart}
+     * @return {Number}
+     * @return {dc.heatMap}
      */
     _chart.yBorderRadius = function (yBorderRadius) {
         if (!arguments.length) {

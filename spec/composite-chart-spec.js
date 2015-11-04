@@ -1,12 +1,15 @@
 /* global appendChartID, loadDateFixture, makeDate */
 describe('dc.compositeChart', function () {
-    var id, chart, data, dateDimension, dateValueSumGroup, dateIdSumGroup, dateGroup;
+    var id, chart, data, dateDimension, dateValueSumGroup, dateValueNegativeSumGroup,
+        dateIdSumGroup, dateIdNegativeSumGroup, dateGroup;
 
     beforeEach(function () {
         data = crossfilter(loadDateFixture());
         dateDimension = data.dimension(function (d) { return d3.time.day.utc(d.dd); });
         dateValueSumGroup = dateDimension.group().reduceSum(function (d) { return d.value; });
+        dateValueNegativeSumGroup = dateDimension.group().reduceSum(function (d) { return -d.value; });
         dateIdSumGroup = dateDimension.group().reduceSum(function (d) { return d.id; });
+        dateIdNegativeSumGroup = dateDimension.group().reduceSum(function (d) { return -d.id; });
         dateGroup = dateDimension.group();
 
         id = 'composite-chart';
@@ -547,6 +550,93 @@ describe('dc.compositeChart', function () {
                 expect(chart.selectAll('.grid-line.horizontal line').size()).toBe(7);
             });
         });
+
+        describe('when composing a left axis chart with negative values', function () {
+            var leftChart, rightChart;
+            beforeEach(function () {
+                chart
+                    .compose([
+                        leftChart = dc.barChart(chart)
+                            .group(dateValueNegativeSumGroup, 'Date Value Group'),
+                        rightChart = dc.lineChart(chart)
+                            .group(dateIdSumGroup, 'Date ID Group')
+                            .useRightYAxis(true)
+                    ])
+                    .render();
+            });
+
+            it('the axis baselines shouldn\'t match', function () {
+                expect(leftChart.y()(0)).not.toEqual(rightChart.y()(0));
+            });
+
+            describe('with alignYAxes', function () {
+                beforeEach(function () {
+                    chart.alignYAxes(true)
+                        .render();
+                });
+                it('the axis baselines should match', function () {
+                    expect(leftChart.y()(0)).toEqual(rightChart.y()(0));
+                });
+            });
+        });
+
+        describe('when composing a right axis chart with negative values', function () {
+            var leftChart, rightChart;
+            beforeEach(function () {
+                chart
+                    .compose([
+                        leftChart = dc.barChart(chart)
+                            .group(dateIdSumGroup, 'Date ID Group'),
+                        rightChart = dc.lineChart(chart)
+                            .group(dateValueNegativeSumGroup, 'Date Value Group')
+                            .useRightYAxis(true)
+                    ])
+                    .render();
+            });
+
+            it('the axis baselines shouldn\'t match', function () {
+                expect(leftChart.y()(0)).not.toEqual(rightChart.y()(0));
+            });
+
+            describe('with alignYAxes', function () {
+                beforeEach(function () {
+                    chart.alignYAxes(true)
+                        .render();
+                });
+                it('the axis baselines should match', function () {
+                    expect(leftChart.y()(0)).toEqual(rightChart.y()(0));
+                });
+            });
+        });
+
+        describe('when composing left and right axes charts with negative values', function () {
+          var leftChart, rightChart;
+          beforeEach(function () {
+              chart
+                  .compose([
+                      leftChart = dc.barChart(chart)
+                          .group(dateIdNegativeSumGroup, 'Date ID Group'),
+                      rightChart = dc.lineChart(chart)
+                          .group(dateValueNegativeSumGroup, 'Date Value Group')
+                          .useRightYAxis(true)
+                  ])
+                  .render();
+          });
+
+          it('the axis baselines shouldn\'t match', function () {
+              expect(leftChart.y()(0)).not.toEqual(rightChart.y()(0));
+          });
+
+          describe('with alignYAxes', function () {
+              beforeEach(function () {
+                  chart.alignYAxes(true)
+                      .render();
+              });
+              it('the axis baselines should match', function () {
+                  expect(leftChart.y()(0)).toEqual(rightChart.y()(0));
+              });
+          });
+      });
     });
 
     describe('sub-charts with different filter types', function () {
