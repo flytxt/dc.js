@@ -704,4 +704,89 @@ describe('dc.compositeChart', function () {
             });
         });
     });
+
+    describe('multi-bar chart', function () {
+        var translateX = /translate\((-?[\d\.]*)(?:[, ](.*))?\)/;
+
+        describe('with even number of bar charts', function () {
+            var barWidth;
+
+            beforeEach(function () {
+                chart
+                    .compose([
+                        dc.barChart(chart)
+                            .group(dateValueSumGroup, 'Date Value Group'),
+                        dc.barChart(chart)
+                            .group(dateIdSumGroup, 'Date ID Group')
+                    ])
+                    .render();
+            });
+            it('bars should come one after the other', function () {
+                var dx0 = +translateX.exec(chart.g().select('.sub._0').attr('transform'))[1];
+                var dx1 = +translateX.exec(chart.g().select('.sub._1').attr('transform'))[1];
+                barWidth = barWidth || +chart.g().select('.bar').attr('width');
+
+                expect(dx0).toBe(0);
+                expect(dx1).toBe(barWidth);
+            });
+            describe('with centerBar set to true', function () {
+                beforeEach(function () {
+                    chart.childOptions({centerBar: true})
+                        .render();
+                });
+                it('bars should center around x-axis data position and come one after the other', function () {
+                    var dx0 = +translateX.exec(chart.g().select('.sub._0').attr('transform'))[1];
+                    var dx1 = +translateX.exec(chart.g().select('.sub._1').attr('transform'))[1];
+                    barWidth = barWidth || +chart.g().select('.bar').attr('width');
+
+                    expect(dx0).toBe(-barWidth / 2);
+                    expect(dx1).toBe(barWidth / 2);
+                });
+            });
+        });
+
+        describe('with odd number of bar charts', function () {
+            var barWidth;
+
+            beforeEach(function () {
+                chart
+                    .compose([
+                        dc.barChart(chart)
+                            .group(dateValueSumGroup, 'Date Value Group'),
+                        dc.barChart(chart)
+                            .group(dateIdSumGroup, 'Date ID Group'),
+                        dc.barChart(chart)
+                            .group(dateValueSumGroup, 'Date Value Group')
+                    ])
+                    .render();
+            });
+            it('bars should come one after the other', function () {
+                var dx0 = +translateX.exec(chart.g().select('.sub._0').attr('transform'))[1];
+                var dx1 = +translateX.exec(chart.g().select('.sub._1').attr('transform'))[1];
+                var dx2 = +translateX.exec(chart.g().select('.sub._2').attr('transform'))[1];
+
+                barWidth = barWidth || +chart.g().select('.bar').attr('width');
+
+                expect(dx0).toBe(0);
+                expect(dx1).toBe(barWidth);
+                expect(dx2).toBe(2 * barWidth);
+            });
+            describe('with centerBar set to true', function () {
+                beforeEach(function () {
+                    chart.childOptions({centerBar: true})
+                        .render();
+                });
+                it('bars should center around x-axis data position and come one after the other', function () {
+                    var dx0 = +translateX.exec(chart.g().select('.sub._0').attr('transform'))[1];
+                    var dx1 = +translateX.exec(chart.g().select('.sub._1').attr('transform'))[1];
+                    var dx2 = +translateX.exec(chart.g().select('.sub._2').attr('transform'))[1];
+                    barWidth = barWidth || +chart.g().select('.bar').attr('width');
+
+                    expect(dx0).toBe(-barWidth);
+                    expect(dx1).toBe(0);
+                    expect(dx2).toBe(barWidth);
+                });
+            });
+        });
+    });
 });
