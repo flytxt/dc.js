@@ -96,16 +96,8 @@ dc.bubbleMixin = function (_chart) {
         return _chart.label()(d);
     };
 
-    var shouldLabel = function (d) {
-        return (_chart.bubbleR(d) > _minRadiusWithLabel);
-    };
-
     var labelOpacity = function (d) {
-        return shouldLabel(d) ? 1 : 0;
-    };
-
-    var labelPointerEvent = function (d) {
-        return shouldLabel(d) ? 'all' : 'none';
+        return (_chart.bubbleR(d) > _minRadiusWithLabel) ? 1 : 0;
     };
 
     _chart._doRenderLabel = function (bubbleGEnter) {
@@ -121,7 +113,6 @@ dc.bubbleMixin = function (_chart) {
 
             label
                 .attr('opacity', 0)
-                .attr('pointer-events', labelPointerEvent)
                 .text(labelFunction);
             dc.transition(label, _chart.transitionDuration())
                 .attr('opacity', labelOpacity);
@@ -131,7 +122,6 @@ dc.bubbleMixin = function (_chart) {
     _chart.doUpdateLabels = function (bubbleGEnter) {
         if (_chart.renderLabel()) {
             var labels = bubbleGEnter.selectAll('text')
-                .attr('pointer-events', labelPointerEvent)
                 .text(labelFunction);
             dc.transition(labels, _chart.transitionDuration())
                 .attr('opacity', labelOpacity);

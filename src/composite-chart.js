@@ -24,7 +24,6 @@ dc.compositeChart = function (parent, chartGroup) {
 
     var _chart = dc.coordinateGridMixin({});
     var _children = [];
-    var _noOfChildBarCharts = 0;
 
     var _childOptions = {};
 
@@ -203,19 +202,7 @@ dc.compositeChart = function (parent, chartGroup) {
         child.g().attr('class', SUB_CHART_CLASS + ' _' + i);
     }
 
-    // get transform value for childBarCharts
-    function getTransformFactor (i, barWidth) {
-        if (_childOptions.centerBar) {
-            return ((i - 0) * barWidth) - ((barWidth * (_noOfChildBarCharts - 1)) / 2);
-        } else {
-            return i * barWidth;
-        }
-    }
-
     _chart.plotData = function () {
-        var barWidth, factor;
-        var j = 0; // index of bar chart amongst other bar charts in this composite chart
-
         for (var i = 0; i < _children.length; ++i) {
             var child = _children[i];
 
@@ -239,18 +226,7 @@ dc.compositeChart = function (parent, chartGroup) {
                 child.yAxis(_chart.yAxis());
             }
 
-            if (_noOfChildBarCharts > 0 && child._isBarChart) {
-                child.barPadding(1 / _noOfChildBarCharts);
-            }
-
             child.plotData();
-
-            if (_noOfChildBarCharts > 0 && child._isBarChart) {
-                barWidth = barWidth || +child.g().select('.bar').attr('width');
-                factor = getTransformFactor(j, barWidth);
-                child.g().attr('transform', 'translate(' + factor + ', 0)');
-                j += 1;
-            }
 
             child._activateRenderlets();
         }
@@ -354,8 +330,6 @@ dc.compositeChart = function (parent, chartGroup) {
      */
     _chart.compose = function (subChartArray) {
         _children = subChartArray;
-        _noOfChildBarCharts = 0;
-
         _children.forEach(function (child) {
             child.height(_chart.height());
             child.width(_chart.width());
@@ -363,12 +337,6 @@ dc.compositeChart = function (parent, chartGroup) {
 
             if (_shareTitle) {
                 child.title(_chart.title());
-            }
-
-            // counting number of child bar charts, not sure if there is a better way to identify
-            if (typeof child.barPadding === 'function') {
-                _noOfChildBarCharts += 1;
-                child._isBarChart = true;
             }
 
             child.options(_childOptions);
