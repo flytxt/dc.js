@@ -27,10 +27,14 @@
 dc.barChart = function (parent, chartGroup) {
     var MIN_BAR_WIDTH = 1;
     var DEFAULT_GAP_BETWEEN_BARS = 2;
+    var DEFAULT_GAP_BETWEEN_BAR_GROUPS = 5;
+    var LABEL_PADDING = 3;
 
     var _chart = dc.stackMixin(dc.coordinateGridMixin({}));
 
     var _gap = DEFAULT_GAP_BETWEEN_BARS;
+    var _groupGap = DEFAULT_GAP_BETWEEN_BAR_GROUPS;
+    var _groupBars = false;
     var _centerBar = false;
     var _alwaysUseRounding = false;
 
@@ -51,6 +55,10 @@ dc.barChart = function (parent, chartGroup) {
         return _chart._render();
     });
 
+    _chart.label(function (d) {
+        return dc.utils.printSingleValue(d.y0 + d.y);
+    }, false);
+
     _chart.plotData = function () {
         var layers = _chart.chartBodyG().selectAll('g.stack')
             .data(_chart.data());
@@ -64,15 +72,60 @@ dc.barChart = function (parent, chartGroup) {
                 return 'stack ' + '_' + i;
             });
 
+        var last = layers.size() - 1;
         layers.each(function (d, i) {
             var layer = d3.select(this);
 
             renderBars(layer, i, d);
+
+            if (_chart.renderLabel() && last === i) {
+                renderLabels(layer, i, d);
+            }
         });
     };
 
     function barHeight (d) {
         return dc.utils.safeNumber(Math.abs(_chart.y()(d.y + d.y0) - _chart.y()(d.y0)));
+    }
+
+    function renderLabels (layer, layerIndex, d) {
+        var labels = layer.selectAll('text.barLabel')
+            .data(d.values, dc.pluck('x'));
+
+        labels.enter()
+            .append('text')
+            .attr('class', 'barLabel')
+            .attr('text-anchor', 'middle');
+
+        if (_chart.isOrdinal()) {
+            labels.on('click', _chart.onClick);
+            labels.attr('cursor', 'pointer');
+        }
+
+        dc.transition(labels, _chart.transitionDuration())
+            .attr('x', function (d) {
+                var x = _chart.x()(d.x);
+                if (!_centerBar) {
+                    x += _barWidth / 2;
+                }
+                return dc.utils.safeNumber(x);
+            })
+            .attr('y', function (d) {
+                var y = _chart.y()(d.y + d.y0);
+
+                if (d.y < 0) {
+                    y -= barHeight(d);
+                }
+
+                return dc.utils.safeNumber(y - LABEL_PADDING);
+            })
+            .text(function (d) {
+                return _chart.label()(d);
+            });
+
+        dc.transition(labels.exit(), _chart.transitionDuration())
+            .attr('height', 0)
+            .remove();
     }
 
     function renderBars (layer, layerIndex, d) {
@@ -97,6 +150,11 @@ dc.barChart = function (parent, chartGroup) {
         dc.transition(bars, _chart.transitionDuration())
             .attr('x', function (d) {
                 var x = _chart.x()(d.x);
+                if (_groupBars) {
+                    x += _chart.groupGap() / 2;
+                    x += layerIndex * (_barWidth + _gap);
+                    x += _gap / 2;
+                }
                 if (_centerBar) {
                     x -= _barWidth / 2;
                 }
@@ -130,13 +188,24 @@ dc.barChart = function (parent, chartGroup) {
         if (_barWidth === undefined) {
             var numberOfBars = _chart.xUnitCount();
 
-            // please can't we always use rangeBands for bar charts?
-            if (_chart.isOrdinal() && _gap === undefined) {
-                _barWidth = Math.floor(_chart.x().rangeBand());
-            } else if (_gap) {
-                _barWidth = Math.floor((_chart.xAxisLength() - (numberOfBars - 1) * _gap) / numberOfBars);
+            if (_groupBars) {
+                var numberOfStacks = _chart.stack().length;
+
+                if (_chart.isOrdinal()) {
+                    _barWidth = Math.floor((_chart.x().rangeBand() - _chart.groupGap()) / numberOfStacks - _gap);
+                } else {
+                    _barWidth = Math.floor((_chart.xAxisLength() - (_chart.xUnitCount() - 1) * _chart.groupGap() -
+                            numberOfStacks * _gap) / (numberOfBars * numberOfStacks));
+                }
             } else {
-                _barWidth = Math.floor(_chart.xAxisLength() / (1 + _chart.barPadding()) / numberOfBars);
+                // please can't we always use rangeBands for bar charts?
+                if (_chart.isOrdinal() && _gap === undefined) {
+                    _barWidth = Math.floor(_chart.x().rangeBand());
+                } else if (_gap) {
+                    _barWidth = Math.floor((_chart.xAxisLength() - (numberOfBars - 1) * _gap) / numberOfBars);
+                } else {
+                    _barWidth = Math.floor(_chart.xAxisLength() / (1 + _chart.barPadding()) / numberOfBars);
+                }
             }
 
             if (_barWidth === Infinity || isNaN(_barWidth) || _barWidth < MIN_BAR_WIDTH) {
@@ -196,6 +265,21 @@ dc.barChart = function (parent, chartGroup) {
         _chart._onClick(d.data);
     });
 
+    dc.override(_chart, 'data', function () {
+        var data = _chart._data();
+
+        if (_groupBars) {
+            // set y0 to 0 on all layers
+            data.forEach(function (layer) {
+                layer.values.forEach(function (value) {
+                    value.y0 = 0;
+                });
+            });
+        }
+
+        return data;
+    });
+
     /**
      * Get or set the spacing between bars as a fraction of bar size. Valid values are between 0-1.
      * Setting this value will also remove any previously set {@link #dc.barChart+gap gap}. See the
@@ -249,6 +333,41 @@ dc.barChart = function (parent, chartGroup) {
             return _gap;
         }
         _gap = gap;
+        return _chart;
+    };
+
+    /**
+     * Manually set fixed gap (in px) between bar groups instead of relying on the default auto-generated
+     * gap.  Only applicable for grouped bar charts.
+     * @name groupGap
+     * @memberof dc.barChart
+     * @instance
+     * @param {Number} [groupGap=5]
+     * @return {Number}
+     * @return {dc.barChart}
+     */
+    _chart.groupGap = function (groupGap) {
+        if (!arguments.length) {
+            return _groupGap;
+        }
+        _groupGap = groupGap;
+        return _chart;
+    };
+
+    /**
+     * Set to true to group bars instead of stacking them.
+     * @name groupBars
+     * @memberof dc.barChart
+     * @instance
+     * @param {Number} [groupBars=false]
+     * @return {Number}
+     * @return {dc.barChart}
+     */
+    _chart.groupBars = function (groupBars) {
+        if (!arguments.length) {
+            return _groupBars;
+        }
+        _groupBars = groupBars;
         return _chart;
     };
 
