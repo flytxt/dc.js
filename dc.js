@@ -5726,8 +5726,13 @@ dc.barChart = function (parent, chartGroup) {
                     x += layerIndex * (_barWidth + _gap);
                     x += _gap / 2;
                 }
-                if (!_centerBar) {
-                    x += _barWidth / 2;
+                x += _barWidth / 2;
+                if (_centerBar && !_chart.isOrdinal()) {
+                    if (_groupBars) {
+                        x -= ((_barWidth + _gap) * _chart.stack().length + _chart.groupGap()) / 2;
+                    } else {
+                        x -= _barWidth / 2;
+                    }
                 }
                 return dc.utils.safeNumber(x);
             })
@@ -5776,8 +5781,12 @@ dc.barChart = function (parent, chartGroup) {
                     x += layerIndex * (_barWidth + _gap);
                     x += _gap / 2;
                 }
-                if (_centerBar) {
-                    x -= _barWidth / 2;
+                if (_centerBar && !_chart.isOrdinal()) {
+                    if (_groupBars) {
+                        x -= ((_barWidth + _gap) * _chart.stack().length + _chart.groupGap()) / 2;
+                    } else {
+                        x -= _barWidth / 2;
+                    }
                 }
                 if (_chart.isOrdinal() && _gap !== undefined) {
                     x += _gap / 2;
