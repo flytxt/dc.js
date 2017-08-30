@@ -1049,13 +1049,13 @@ dc.baseMixin = function (_chart) {
      * @instance
      * @param {*} datum
      */
-    _chart.onClick = function (datum) {
+    /*_chart.onClick = function (datum) {
         var filter = _chart.keyAccessor()(datum);
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
         });
-    };
+    };*/
 
     /**
      * Set or get the filter handler. The filter handler is a function that performs the filter action

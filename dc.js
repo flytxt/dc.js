@@ -1882,13 +1882,13 @@ dc.baseMixin = function (_chart) {
      * @instance
      * @param {*} datum
      */
-    _chart.onClick = function (datum) {
+    /*_chart.onClick = function (datum) {
         var filter = _chart.keyAccessor()(datum);
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
         });
-    };
+    };*/
 
     /**
      * Set or get the filter handler. The filter handler is a function that performs the filter action
@@ -4509,13 +4509,13 @@ dc.bubbleMixin = function (_chart) {
         return _chart.hasFilter(d.key);
     };
 
-    _chart.onClick = function (d) {
+    /*_chart.onClick = function (d) {
         var filter = d.key;
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
         });
-    };
+    };*/
 
     return _chart;
 };
