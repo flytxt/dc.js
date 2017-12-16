@@ -14,6 +14,7 @@ dc.bubbleMixin = function (_chart) {
     _chart.BUBBLE_NODE_CLASS = 'node';
     _chart.BUBBLE_CLASS = 'bubble';
     _chart.MIN_RADIUS = 10;
+    _chart.interactive = true;
 
     _chart = dc.colorMixin(_chart);
 
@@ -233,11 +234,13 @@ dc.bubbleMixin = function (_chart) {
     };
 
     _chart.onClick = function (d) {
-        /*var filter = d.key;
-        dc.events.trigger(function () {
-            _chart.filter(filter);
-            _chart.redrawGroup();
-        });*/
+        if (_chart.interactive) {
+            var filter = d.key;
+            dc.events.trigger(function () {
+                _chart.filter(filter);
+                _chart.redrawGroup();
+            });
+        }
     };
 
     return _chart;
