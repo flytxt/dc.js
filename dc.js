@@ -5838,7 +5838,7 @@ dc.barChart = function (parent, chartGroup) {
                 if (_chart.isOrdinal() && _gap === undefined) {
                     _barWidth = Math.floor(_chart.x().rangeBand());
                 } else if (_gap) {
-                    _barWidth = Math.floor((_chart.xAxisLength() - (numberOfBars - 1) * _gap) / numberOfBars);
+                    _barWidth = Math.floor((_chart.xAxisLength() - numberOfBars * _gap) / numberOfBars);
                 } else {
                     _barWidth = Math.floor(_chart.xAxisLength() / (1 + _chart.barPadding()) / numberOfBars);
                 }
